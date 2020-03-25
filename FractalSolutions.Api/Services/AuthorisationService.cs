@@ -1,5 +1,7 @@
-﻿using FractalSolutions.Api.HttpClients;
+﻿using FractalSolutions.Api.Dtos;
+using FractalSolutions.Api.HttpClients;
 using FractalSolutions.Api.Repositories;
+using FractalSolutions.Api.Services.Interfaces;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
@@ -17,25 +19,22 @@ namespace FractalSolutions.Api.Services
             _userRespository = userRespository;
         }
 
-        public async Task<string> GetAccessTokenAsync(string code)
+        public async Task<TokenInfoTL> GetAccessTokenAsync(string code)
         {
             var tokenInfo = await _trueLayerAuthClient.GetTokenAsync(code);
             var handler = new JwtSecurityTokenHandler();
             var jwtToken = handler.ReadJwtToken(tokenInfo.AccessToken);
             var subject = jwtToken.Subject;
 
-
-            // Typically we can store some information about user form the token however in this case there isn't a whole lot
-            // not terribly familiar with authorisation code flow, not sure if should store these but oh well.
+            // Typically we can store some information about user form the token however in this case 
+            // there isn't a whole lot so we store the subject id, currently we are using using 
+            // this subject for anyting, however we chould ensure that when a token comes it it maches the user id on our repo
             _userRespository.AddUser(new Entities.UserEntity
             {
-                UserId = subject,
-                AuthToken = tokenInfo.AccessToken,
-                RefreshToken = tokenInfo.RefreshToken,
-                TokenExpiry = DateTime.Now.Add(TimeSpan.FromSeconds(tokenInfo.ExpiresIn))
+                UserId = subject              
             });
 
-            return tokenInfo.AccessToken;
+            return tokenInfo;
         }
     }
 }

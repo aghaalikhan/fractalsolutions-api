@@ -1,6 +1,6 @@
 ﻿using FractalSolutions.Api.Dtos;
 using FractalSolutions.Api.Dtos.TrueLayer;
-using FractalSolutions.Api.Services;
+using FractalSolutions.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FractalSolutions.Api.Controllers
-{    
+{
     [Route("api/user/transactions/")]
     public class UserTransactionsController : Controller
     {
@@ -26,18 +26,16 @@ namespace FractalSolutions.Api.Controllers
 
         [HttpGet]
         [Authorize]
-        [ProducesResponseType(typeof(IList<AccountTransactions>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IList<AccountTransactions>>> Get()
+        [ProducesResponseType(typeof(IList<AccountTransactions>), StatusCodes.Status200OK)]        
+        public async Task<IActionResult> Get()
         {
             return Ok(await _userAccountsTransactionService.GetUserTransactionsAsync());
         }
 
         [HttpGet("summary")]
         [Authorize]
-        [ProducesResponseType(typeof(IDictionary<TransactionCategoryTL, decimal>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IList<AccountTransactions>>> GetSummary()
+        [ProducesResponseType(typeof(IDictionary<TransactionCategoryTL, decimal>), StatusCodes.Status200OK)]        
+        public async Task<IActionResult> GetSummary()
         {
             return Ok(await _userAccountsTransactionsSummaryService.GetAccountsSummaryAsync());
         }

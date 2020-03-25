@@ -1,8 +1,6 @@
 ﻿using FractalSolutions.Api.Dtos;
-using FractalSolutions.Api.Dtos.TrueLayer;
-using FractalSolutions.Api.HttpClients;
 using FractalSolutions.Api.Infrastructure;
-using System;
+using FractalSolutions.Api.Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,19 +8,16 @@ using System.Threading.Tasks;
 namespace FractalSolutions.Api.Services
 {
     public class UserAccountsTransactionsService : IUserAccountsTransactionsService
-    {
-        private readonly ICustomMemoryCache _customMemoryCache;        
+    {        
         private readonly IUserAccountsService _userAccountsService;
         private readonly IAccountTransactionsService _accountTransactionService;
 
-        public UserAccountsTransactionsService(
-            ICustomMemoryCache cusomMemoryCache,
+        public UserAccountsTransactionsService(           
             IUserAccountsService userAccountsService,
             IAccountTransactionsService accountTransactionService)
         {            
             _userAccountsService = userAccountsService;
-            _accountTransactionService = accountTransactionService;
-            _customMemoryCache = cusomMemoryCache;
+            _accountTransactionService = accountTransactionService;            
         }
 
         public async Task<IList<AccountTransactions>> GetUserTransactionsAsync()
@@ -31,13 +26,13 @@ namespace FractalSolutions.Api.Services
      
             var getAccTransactions = accounts.Select(acc =>
                 {
-                    return GetAccountTransactions(acc.AccountId);
+                    return GetAccountTransactionsAsync(acc.AccountId);
                 });
 
             return await Task.WhenAll(getAccTransactions);         
         }
 
-        private async Task<AccountTransactions> GetAccountTransactions(string accountId)
+        private async Task<AccountTransactions> GetAccountTransactionsAsync(string accountId)
         {
             var transactions = await _accountTransactionService.GetAccountTransactionsAsync(accountId);            
 

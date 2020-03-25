@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FractalSolutions.Api.Services.Interfaces;
+using System;
 
 namespace FractalSolutions.Api.Services
 {

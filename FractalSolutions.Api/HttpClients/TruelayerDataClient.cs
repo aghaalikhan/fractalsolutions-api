@@ -22,18 +22,9 @@ namespace FractalSolutions.Api.HttpClients
             response.EnsureSuccessStatusCode();
 
             return JsonConvert.DeserializeObject<ResponseTL<AccountTL>>(await response.Content.ReadAsStringAsync());
-        }  
+        }      
 
-        public async Task<ResponseTL<AccountTL>> GetUserAccountAsync(string accountId)
-        {
-            var response = await httpClient.GetAsync($"accounts/{accountId}");
-
-            response.EnsureSuccessStatusCode();
-
-            return JsonConvert.DeserializeObject<ResponseTL<AccountTL>>(await response.Content.ReadAsStringAsync());
-        }
-
-        public async Task<ResponseTL<TransactionTL>> GetAccountTransactions(string accountId)
+        public async Task<ResponseTL<TransactionTL>> GetAccountTransactionsAsync(string accountId)
         {
             var response = await httpClient.GetAsync($"accounts/{accountId}/transactions");
 

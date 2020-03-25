@@ -1,10 +1,10 @@
 ﻿using FractalSolutions.Api.Dtos;
 using System.Threading.Tasks;
 
-namespace FractalSolutions.Api.Services
+namespace FractalSolutions.Api.Services.Interfaces
 {
     public interface IAuthorisationService
     {
-        Task<string> GetAccessTokenAsync(string code);
+        Task<TokenInfoTL> GetAccessTokenAsync(string code);
     }
 }

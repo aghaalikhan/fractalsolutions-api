@@ -2,6 +2,7 @@
 using FractalSolutions.Api.Dtos.TrueLayer;
 using FractalSolutions.Api.HttpClients;
 using FractalSolutions.Api.Infrastructure;
+using FractalSolutions.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -29,13 +30,13 @@ namespace FractalSolutions.Api.Services
 
         public async Task<IList<Account>> GetUserAccountsAsync()
         {
-            var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+            var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var currentUserKey = $"{userId}_{CacheKeyConstants.UserAccountsKey}";
+            var cacheKey = $"{userId}_{CacheKeyConstants.UserAccountsKey}";
 
             IList<AccountTL> userAccounts; 
 
-            userAccounts = _customMemoryCache.Get<IList<AccountTL>>(currentUserKey);
+            userAccounts = _customMemoryCache.Get<IList<AccountTL>>(cacheKey);
 
             if(userAccounts == null)
             {
@@ -48,7 +49,7 @@ namespace FractalSolutions.Api.Services
 
                 userAccounts = userAccountsResults.Results;
 
-                _customMemoryCache.Set(currentUserKey, userAccounts);
+                _customMemoryCache.Set(cacheKey, userAccounts);
             }         
 
             return userAccounts.Select(acc =>
@@ -60,37 +61,6 @@ namespace FractalSolutions.Api.Services
                     AccountType = acc.AccountType
                 };
             }).ToList();
-        }
-
-        public async Task<Account> GetUserAccountAsync(string accountId)
-        {
-            var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
-
-            var currenUserAccountsKey = $"{userId}_{CacheKeyConstants.UserAccountsKey}";
-            
-            var cachedAccounts = _customMemoryCache.Get<IList<AccountTL>>(currenUserAccountsKey);
-
-            AccountTL userAccount = null;
-
-            if (cachedAccounts == null || cachedAccounts.Any(acc => acc.AccountId != accountId))
-            {
-                var userAccountsResults = await _trueLayerDataClient.GetUserAccountAsync(accountId);
-
-                if (userAccountsResults.Status != ResultStatusTL.Succeeded)
-                {
-                    throw new Exception("Unable to get user accounts");
-                }
-
-                userAccount = userAccountsResults.Results.First();
-                cachedAccounts.Add(userAccount);
-            }            
-
-            return new Account
-            {
-                AccountId = userAccount.AccountId,
-                DisplayName = userAccount.DisplayName,
-                AccountType = userAccount.AccountType
-            };
-        }
+        }      
     }
 }

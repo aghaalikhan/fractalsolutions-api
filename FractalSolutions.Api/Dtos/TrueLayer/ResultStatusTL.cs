@@ -2,6 +2,8 @@
 {
     public enum ResultStatusTL
     {
-        Succeeded
+        Succeeded,
+        //not sure if it actually returns failed need somehing other than success
+        Failed
     }
 }

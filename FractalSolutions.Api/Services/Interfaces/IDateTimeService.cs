@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FractalSolutions.Api.Services
+namespace FractalSolutions.Api.Services.Interfaces
 {
     public interface IDateTimeService
     {

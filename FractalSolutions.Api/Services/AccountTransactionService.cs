@@ -2,6 +2,7 @@
 using FractalSolutions.Api.Dtos.TrueLayer;
 using FractalSolutions.Api.HttpClients;
 using FractalSolutions.Api.Infrastructure;
+using FractalSolutions.Api.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace FractalSolutions.Api.Services
 
             if (transactions == null)
             {
-                var transactionsResult = await _trueLayerDataClient.GetAccountTransactions(accountId);
+                var transactionsResult = await _trueLayerDataClient.GetAccountTransactionsAsync(accountId);
 
                 if (transactionsResult.Status != ResultStatusTL.Succeeded)
                 {
@@ -44,9 +45,10 @@ namespace FractalSolutions.Api.Services
             {
                 return new Transaction
                 {
-                    TimeStamp = trans.Timestamp,
+                    Timestamp = trans.Timestamp,
                     TransactionCategory = trans.TransactionCategory,
-                    Amount = trans.Amount
+                    Amount = trans.Amount,
+                    TransactionId = trans.TransactionId
                 };
             }).ToList();
         }

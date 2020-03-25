@@ -1,4 +1,5 @@
 ﻿using FractalSolutions.Api.Dtos.TrueLayer;
+using FractalSolutions.Api.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +38,7 @@ namespace FractalSolutions.Api.Services
                 var today = _dateTimeService.UtcNow.Date;
                 var pastWeek = today.AddDays(-7);
 
-                if (transaction.TimeStamp >= pastWeek && transaction.TimeStamp < today)
+                if (transaction.Timestamp >= pastWeek && transaction.Timestamp < today)
                 {
                     categorisedTotals[transaction.TransactionCategory] += transaction.Amount;
                 }

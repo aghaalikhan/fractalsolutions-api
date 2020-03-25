@@ -1,6 +1,6 @@
 ﻿using FractalSolutions.Api.Dtos;
 using FractalSolutions.Api.Repositories;
-using FractalSolutions.Api.Services;
+using FractalSolutions.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,20 +11,18 @@ namespace FractalSolutions.Api.Controllers
     [Route("api/[controller]")]
     public class RedirectController : Controller
     {
-        private readonly IAuthorisationService _authorisationService;
-        private readonly IUserRepository _userRepository;
+        private readonly IAuthorisationService _authorisationService;        
 
-        public RedirectController(IAuthorisationService authorisationService, IUserRepository userRepository)
+        public RedirectController(IAuthorisationService authorisationService)
         {
-            _authorisationService = authorisationService;
-            _userRepository = userRepository;
+            _authorisationService = authorisationService;            
         }
         
         [HttpGet]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(TokenInfoTL), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<string>> Get([FromQuery]string code)
+        public async Task<IActionResult> Get([FromQuery]string code)
         {
             if(string.IsNullOrWhiteSpace(code))
             {

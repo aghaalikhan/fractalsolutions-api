@@ -3,6 +3,7 @@ using FractalSolutions.Api.Extensions;
 using FractalSolutions.Api.Infrastructure;
 using FractalSolutions.Api.Repositories;
 using FractalSolutions.Api.Services;
+using FractalSolutions.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,8 +35,10 @@ namespace FractalSolutions.Api
         {
             var serviceConfigCollection = Configuration.BindConfigurationSection<ServiceConfigCollection>("Services");
             var clientSettings = Configuration.BindConfigurationSection<ClientSettings>("ClientSettings");
+            var cacheSettings = Configuration.BindConfigurationSection<CacheSettings>("CacheSettings");
 
             services.AddHttpContextAccessor();
+            services.AddSingleton<ICacheSettings>(cacheSettings);
             services.AddSingleton<IDateTimeService, DateTimeService>();
             services.ConfigureHttpServices(serviceConfigCollection, clientSettings);            
             services.AddSingleton<ICustomMemoryCache, CustomMemoryCache>();
@@ -74,7 +77,7 @@ namespace FractalSolutions.Api
                 {
                     ValidateIssuer = true,
                     ValidateAudience = false,
-                    ValidateIssuerSigningKey = true
+                    ValidateIssuerSigningKey = true,
                 };
             });
             
