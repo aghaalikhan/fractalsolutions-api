@@ -18,3 +18,6 @@ How to run api:
 - use auth link builder on true layer which now now redirect to the api and get access code
 - api has swagger so no need for post man, just add the bearer token on there once obtained 
 - you should be able to get transactions for loggin user
+
+Note:
+API has swagger so there should be no need to use postman
